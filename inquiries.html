@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inquiries Management - Uniform Palace</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f8fafc;
+            color: #1f2937;
+        }
+
+        .header {
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .logo {
+            color: #dc2626;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .nav-link {
+            color: #6b7280;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .nav-link:hover {
+            color: #dc2626;
+            background: #fef2f2;
+        }
+
+        .nav-link.active {
+            color: #dc2626;
+            background: #fef2f2;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .refresh-btn {
+            background: #059669;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .refresh-btn:hover {
+            background: #047857;
+            transform: translateY(-2px);
+        }
+
+        .test-inquiry-btn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            margin-left: 1rem;
+        }
+
+        .test-inquiry-btn:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+            border-left: 4px solid #dc2626;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #dc2626;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #6b7280;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .inquiries-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .inquiry-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .inquiry-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .inquiry-header {
+            background: #f9fafb;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .inquiry-title {
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .inquiry-date {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .inquiry-content {
+            padding: 1.5rem;
+        }
+
+        .inquiry-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .detail-label {
+            font-size: 0.8rem;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.25rem;
+        }
+
+        .detail-value {
+            font-weight: 500;
+            color: #1f2937;
+        }
+
+        .inquiry-requirements {
+            background: #f9fafb;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+
+        .requirements-label {
+            font-size: 0.8rem;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .requirements-text {
+            color: #1f2937;
+            line-height: 1.5;
+        }
+
+        .inquiry-followup {
+            background: #f0f9ff;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            border-left: 4px solid #0ea5e9;
+        }
+
+        .followup-label {
+            font-size: 0.8rem;
+            color: #0c4a6e;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .followup-details {
+            color: #0c4a6e;
+            line-height: 1.5;
+            font-size: 0.9rem;
+        }
+
+        .inquiry-actions {
+            padding: 1rem 1.5rem;
+            background: #f9fafb;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+        }
+
+        .action-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .convert-btn {
+            background: #dc2626;
+            color: white;
+        }
+
+        .convert-btn:hover {
+            background: #b91c1c;
+        }
+
+        .followup-btn {
+            background: #059669;
+            color: white;
+        }
+
+        .followup-btn:hover {
+            background: #047857;
+        }
+
+        .delete-btn {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .delete-btn:hover {
+            background: #fecaca;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #6b7280;
+        }
+
+        .error-message {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .no-inquiries {
+            text-align: center;
+            padding: 3rem;
+            color: #6b7280;
+        }
+
+        .no-inquiries h3 {
+            margin-bottom: 1rem;
+            color: #374151;
+        }
+
+        .test-inquiry-btn {
+            background: #dc2626;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-top: 1rem;
+            transition: all 0.2s ease;
+        }
+
+        .test-inquiry-btn:hover {
+            background: #b91c1c;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .inquiry-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .inquiry-actions {
+                flex-direction: column;
+            }
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .modal {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #6b7280;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background-color 0.2s;
+        }
+
+        .modal-close:hover {
+            background: #f3f4f6;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .modal-footer {
+            padding: 1.5rem;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            gap: 0.75rem;
+            justify-content: flex-end;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            transition: border-color 0.2s;
+            box-sizing: border-box;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #dc2626;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+        }
+
+        /* Datetime input specific styling */
+        input[type="datetime-local"] {
+            font-family: inherit;
+        }
+
+        input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+            cursor: pointer;
+            opacity: 0.6;
+            transition: opacity 0.2s;
+        }
+
+        input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
+            opacity: 1;
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: #dc2626;
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: #b91c1c;
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid transparent;
+            border-top: 2px solid currentColor;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .success-message {
+            background: #ecfdf5;
+            border: 1px solid #d1fae5;
+            color: #065f46;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">Uniform Palace Admin</div>
+        <div class="nav-links">
+            <a href="/admin-dashboard.html" class="nav-link">Dashboard</a>
+            <a href="/customers.html" class="nav-link">Customers</a>
+            <a href="/products.html" class="nav-link">Products</a>
+            <a href="/orders.html" class="nav-link">Orders</a>
+            <a href="/inquiries.html" class="nav-link active">Inquiries</a>
+            <a href="/admin-dashboard.html" onclick="logout()" style="color: #dc2626;">Logout</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">Inquiries Management</h1>
+            <div class="header-actions">
+                <button class="refresh-btn" onclick="loadInquiries()">
+                    🔄 Refresh
+                </button>
+                <button class="test-inquiry-btn" onclick="testInquiryForm()">
+                    🧪 Test Form
+                </button>
+            </div>
+        </div>
+
+        <div id="errorMessage" class="error-message" style="display: none;"></div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" id="totalInquiries">-</div>
+                <div class="stat-label">Total Inquiries</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="newInquiries">-</div>
+                <div class="stat-label">New Today</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="convertedInquiries">-</div>
+                <div class="stat-label">Converted</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="pendingInquiries">-</div>
+                <div class="stat-label">Pending</div>
+            </div>
+        </div>
+
+        <div class="inquiries-grid" id="inquiriesGrid">
+            <div class="loading">Loading inquiries...</div>
+        </div>
+
+        <div class="no-inquiries" id="noInquiries" style="display: none;">
+            <h3>No inquiries found</h3>
+            <p>Inquiries from your website contact form will appear here.</p>
+            <button class="test-inquiry-btn" onclick="testInquiryForm()">Test Contact Form</button>
+        </div>
+    </div>
+
+    <script>
+        // Check authentication
+        function checkAuth() {
+            const token = localStorage.getItem('adminToken');
+            if (!token) {
+                window.location.href = '/admin-login.html';
+                return;
+            }
+            return token;
+        }
+
+        // Load inquiries data
+        async function loadInquiries() {
+            const token = checkAuth();
+            if (!token) return;
+
+            // Show loading state
+            const grid = document.getElementById('inquiriesGrid');
+            grid.innerHTML = '<div class="loading">Loading inquiries...</div>';
+
+            try {
+                console.log('Fetching inquiries from API...');
+                const response = await fetch('/api/inquiries', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                console.log('Response status:', response.status);
+                const result = await response.json();
+                console.log('API response:', result);
+
+                if (response.ok && result.success) {
+                    const inquiries = result.inquiries || [];
+                    console.log('Inquiries data:', inquiries);
+                    
+                    // Store inquiries globally for follow-up function access
+                    window.currentInquiries = inquiries;
+                    
+                    displayInquiries(inquiries);
+                    updateStats(result);
+                } else {
+                    console.error('API error:', result);
+                    showError(result.message || 'Failed to load inquiries');
+                }
+            } catch (error) {
+                console.error('Error loading inquiries:', error);
+                showError('Network error loading inquiries');
+            }
+        }
+
+        // Display inquiries
+        function displayInquiries(inquiries) {
+            const grid = document.getElementById('inquiriesGrid');
+            const noInquiries = document.getElementById('noInquiries');
+            
+            console.log('Displaying inquiries:', inquiries);
+            
+            if (!inquiries || inquiries.length === 0) {
+                grid.style.display = 'none';
+                noInquiries.style.display = 'block';
+                return;
+            }
+
+            grid.style.display = 'grid';
+            noInquiries.style.display = 'none';
+
+            grid.innerHTML = inquiries.map(inquiry => `
+                <div class="inquiry-card">
+                    <div class="inquiry-header">
+                        <div class="inquiry-title">${inquiry.customerName || 'N/A'}</div>
+                        <div class="inquiry-date">${new Date(inquiry.createdAt).toLocaleDateString()}</div>
+                    </div>
+                    <div class="inquiry-content">
+                        <div class="inquiry-details">
+                            <div class="detail-item">
+                                <div class="detail-label">Email</div>
+                                <div class="detail-value">${inquiry.email || 'N/A'}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Phone</div>
+                                <div class="detail-value">${inquiry.phone || 'N/A'}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Company</div>
+                                <div class="detail-value">${inquiry.company || 'N/A'}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Business Type</div>
+                                <div class="detail-value">${inquiry.businessType || 'N/A'}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Uniform Type</div>
+                                <div class="detail-value">${inquiry.uniformType || 'N/A'}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Quantity</div>
+                                <div class="detail-value">${inquiry.quantity || 'N/A'}</div>
+                            </div>
+                        </div>
+                        <div class="inquiry-requirements">
+                            <div class="requirements-label">Requirements</div>
+                            <div class="requirements-text">${inquiry.requirements?.description || 'No requirements specified'}</div>
+                        </div>
+                        ${inquiry.nextFollowUp ? `
+                        <div class="inquiry-followup">
+                            <div class="followup-label">📅 Next Follow-up</div>
+                            <div class="followup-details">
+                                <strong>Date:</strong> ${new Date(inquiry.nextFollowUp).toLocaleString()}
+                                ${inquiry.followUpNotes ? `<br><strong>Notes:</strong> ${inquiry.followUpNotes}` : ''}
+                            </div>
+                        </div>
+                        ` : ''}
+                    </div>
+                    <div class="inquiry-actions">
+                        <button class="action-btn convert-btn" onclick="convertToCustomer('${inquiry._id}')">Convert to Customer</button>
+                        <button class="action-btn followup-btn" onclick="scheduleFollowup('${inquiry._id}')">
+                            ${inquiry.nextFollowUp ? 'Update Follow-up' : 'Schedule Follow-up'}
+                        </button>
+                        <button class="action-btn delete-btn" onclick="deleteInquiry('${inquiry._id}')">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Update statistics
+        function updateStats(data) {
+            if (data.pagination && data.pagination.totalInquiries) {
+                document.getElementById('totalInquiries').textContent = data.pagination.totalInquiries;
+            }
+            // For now, set placeholder values for other stats
+            document.getElementById('newInquiries').textContent = '0';
+            document.getElementById('convertedInquiries').textContent = '0';
+            document.getElementById('pendingInquiries').textContent = '0';
+        }
+
+        // Show error message
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        // Global variables for modal state
+        let currentInquiryId = null;
+
+        // Convert inquiry to customer
+        function convertToCustomer(id) {
+            currentInquiryId = id;
+            const modal = document.getElementById('convertModal');
+            modal.classList.add('active');
+            
+            // Reset form
+            document.getElementById('customerStatus').value = 'prospect';
+            document.getElementById('additionalNotes').value = '';
+        }
+
+        // Close convert modal
+        function closeConvertModal() {
+            const modal = document.getElementById('convertModal');
+            modal.classList.remove('active');
+            currentInquiryId = null;
+        }
+
+        // Confirm conversion
+        async function confirmConversion() {
+            if (!currentInquiryId) return;
+
+            const token = checkAuth();
+            if (!token) return;
+
+            const btn = document.getElementById('confirmConvertBtn');
+            const btnText = btn.querySelector('.btn-text');
+            const spinner = btn.querySelector('.spinner');
+
+            // Show loading state
+            btnText.style.display = 'none';
+            spinner.style.display = 'inline-block';
+            btn.disabled = true;
+
+            try {
+                const customerStatus = document.getElementById('customerStatus').value;
+                const additionalNotes = document.getElementById('additionalNotes').value.trim();
+
+                const requestBody = {
+                    customerStatus
+                };
+                
+                if (additionalNotes) {
+                    requestBody.additionalNotes = additionalNotes;
+                }
+
+                console.log('Converting inquiry to customer:', currentInquiryId, requestBody);
+
+                const response = await fetch(`/api/inquiries/${currentInquiryId}/convert-to-customer`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestBody)
+                });
+
+                const result = await response.json();
+                console.log('Conversion response:', result);
+
+                if (response.ok && result.success) {
+                    // Show success message
+                    const modalContent = document.getElementById('convertModalContent');
+                    modalContent.innerHTML = `
+                        <div class="success-message">
+                            <strong>Success!</strong> Inquiry has been converted to ${result.isNewCustomer ? 'a new' : 'an existing'} customer.
+                            <br><br>
+                            <strong>Customer:</strong> ${result.customer.name}<br>
+                            <strong>Email:</strong> ${result.customer.email}<br>
+                            <strong>Status:</strong> ${result.customer.status}
+                        </div>
+                    `;
+
+                    // Update modal footer
+                    const modalFooter = document.querySelector('#convertModal .modal-footer');
+                    modalFooter.innerHTML = `
+                        <button type="button" class="btn btn-secondary" onclick="closeConvertModal()">Close</button>
+                        <button type="button" class="btn btn-primary" onclick="window.open('/customers.html', '_blank')">View Customers</button>
+                    `;
+
+                    // Reload inquiries to reflect changes
+                    setTimeout(() => {
+                        loadInquiries();
+                    }, 2000);
+
+                } else {
+                    showError(result.message || 'Failed to convert inquiry to customer');
+                }
+
+            } catch (error) {
+                console.error('Error converting inquiry:', error);
+                showError('Network error converting inquiry to customer');
+            } finally {
+                // Reset button state
+                btnText.style.display = 'inline';
+                spinner.style.display = 'none';
+                btn.disabled = false;
+            }
+        }
+
+        // Schedule follow-up
+        function scheduleFollowup(id) {
+            currentInquiryId = id;
+            const modal = document.getElementById('followupModal');
+            modal.classList.add('active');
+            
+            // Find the current inquiry to check if it has existing follow-up
+            const currentInquiry = window.currentInquiries?.find(inq => inq._id === id);
+            
+            if (currentInquiry && currentInquiry.nextFollowUp) {
+                // Update existing follow-up - pre-populate form
+                const existingDate = new Date(currentInquiry.nextFollowUp);
+                const dateTimeString = existingDate.toISOString().slice(0, 16);
+                document.getElementById('followupDateTime').value = dateTimeString;
+                document.getElementById('followupNotes').value = currentInquiry.followUpNotes || '';
+                
+                // Update modal title
+                document.querySelector('#followupModal .modal-title').textContent = 'Update Follow-up';
+                document.querySelector('#confirmFollowupBtn .btn-text').textContent = 'Update Follow-up';
+            } else {
+                // New follow-up - set default datetime to tomorrow at 9 AM
+                const tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                tomorrow.setHours(9, 0, 0, 0);
+                
+                // Format for datetime-local input (YYYY-MM-DDTHH:MM)
+                const dateTimeString = tomorrow.toISOString().slice(0, 16);
+                document.getElementById('followupDateTime').value = dateTimeString;
+                
+                // Reset form
+                document.getElementById('followupNotes').value = '';
+                
+                // Reset modal title
+                document.querySelector('#followupModal .modal-title').textContent = 'Schedule Follow-up';
+                document.querySelector('#confirmFollowupBtn .btn-text').textContent = 'Schedule Follow-up';
+            }
+            
+            document.getElementById('followupPriority').value = 'normal';
+        }
+
+        // Close follow-up modal
+        function closeFollowupModal() {
+            const modal = document.getElementById('followupModal');
+            modal.classList.remove('active');
+            currentInquiryId = null;
+            
+            // Reset modal content for next use
+            const modalContent = document.getElementById('followupModalContent');
+            modalContent.innerHTML = `
+                <form id="followupForm">
+                    <div class="form-group">
+                        <label class="form-label">Follow-up Date & Time *</label>
+                        <input type="datetime-local" id="followupDateTime" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Follow-up Notes *</label>
+                        <textarea id="followupNotes" class="form-textarea" placeholder="Enter follow-up details, action items, or reminders..." required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Priority</label>
+                        <select id="followupPriority" class="form-select">
+                            <option value="normal">Normal</option>
+                            <option value="high">High</option>
+                            <option value="urgent">Urgent</option>
+                        </select>
+                    </div>
+                </form>
+            `;
+            
+            // Reset modal footer
+            const modalFooter = document.querySelector('#followupModal .modal-footer');
+            modalFooter.innerHTML = `
+                <button type="button" class="btn btn-secondary" onclick="closeFollowupModal()">Cancel</button>
+                <button type="button" class="btn btn-primary" id="confirmFollowupBtn" onclick="confirmFollowup()">
+                    <span class="btn-text">Schedule Follow-up</span>
+                    <span class="spinner" style="display: none;"></span>
+                </button>
+            `;
+        }
+
+        // Confirm follow-up scheduling
+        async function confirmFollowup() {
+            if (!currentInquiryId) return;
+
+            const token = checkAuth();
+            if (!token) return;
+
+            const btn = document.getElementById('confirmFollowupBtn');
+            const btnText = btn.querySelector('.btn-text');
+            const spinner = btn.querySelector('.spinner');
+
+            // Show loading state
+            btnText.style.display = 'none';
+            spinner.style.display = 'inline-block';
+            btn.disabled = true;
+
+            try {
+                const followupDateTime = document.getElementById('followupDateTime').value;
+                const followupNotes = document.getElementById('followupNotes').value.trim();
+                const priority = document.getElementById('followupPriority').value;
+
+                if (!followupDateTime || !followupNotes) {
+                    showError('Please fill in all required fields');
+                    return;
+                }
+
+                console.log('Scheduling follow-up:', currentInquiryId, { followupDateTime, followupNotes, priority });
+
+                const response = await fetch(`/api/inquiries/${currentInquiryId}/follow-up`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        nextFollowUp: followupDateTime,
+                        notes: followupNotes
+                    })
+                });
+
+                const result = await response.json();
+                console.log('Follow-up response:', result);
+
+                if (response.ok && result.success) {
+                    // Show success message
+                    const modalContent = document.getElementById('followupModalContent');
+                    modalContent.innerHTML = `
+                        <div class="success-message">
+                            <strong>Success!</strong> Follow-up has been scheduled successfully.
+                            <br><br>
+                            <strong>Date:</strong> ${new Date(followupDateTime).toLocaleString()}<br>
+                            <strong>Notes:</strong> ${followupNotes}<br>
+                            <strong>Priority:</strong> ${priority}
+                        </div>
+                    `;
+
+                    // Update modal footer
+                    const modalFooter = document.querySelector('#followupModal .modal-footer');
+                    modalFooter.innerHTML = `
+                        <button type="button" class="btn btn-secondary" onclick="closeFollowupModal()">Cancel</button>
+                        <button type="button" class="btn btn-primary" onclick="closeFollowupModal()">Done</button>
+                    `;
+
+                    // Reload inquiries to reflect changes
+                    setTimeout(() => {
+                        loadInquiries();
+                        closeFollowupModal();
+                    }, 2000);
+
+                } else {
+                    showError(result.message || 'Failed to schedule follow-up');
+                }
+
+            } catch (error) {
+                console.error('Error scheduling follow-up:', error);
+                showError('Network error scheduling follow-up');
+            } finally {
+                // Reset button state
+                btnText.style.display = 'inline';
+                spinner.style.display = 'none';
+                btn.disabled = false;
+            }
+        }
+
+        // Delete inquiry
+        function deleteInquiry(id) {
+            currentInquiryId = id;
+            const modal = document.getElementById('deleteModal');
+            modal.classList.add('active');
+        }
+
+        // Close delete modal
+        function closeDeleteModal() {
+            const modal = document.getElementById('deleteModal');
+            modal.classList.remove('active');
+            currentInquiryId = null;
+        }
+
+        // Confirm deletion
+        async function confirmDeletion() {
+            if (!currentInquiryId) return;
+
+            const token = checkAuth();
+            if (!token) return;
+
+            const btn = document.getElementById('confirmDeleteBtn');
+            const btnText = btn.querySelector('.btn-text');
+            const spinner = btn.querySelector('.spinner');
+
+            // Show loading state
+            btnText.style.display = 'none';
+            spinner.style.display = 'inline-block';
+            btn.disabled = true;
+
+            try {
+                console.log('Deleting inquiry:', currentInquiryId);
+
+                const response = await fetch(`/api/inquiries/${currentInquiryId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const result = await response.json();
+                console.log('Delete response:', result);
+
+                if (response.ok && result.success) {
+                    closeDeleteModal();
+                    // Reload inquiries to reflect changes
+                    loadInquiries();
+                    
+                    // Show success notification
+                    showNotification('Inquiry deleted successfully', 'success');
+                } else {
+                    showError(result.message || 'Failed to delete inquiry');
+                }
+
+            } catch (error) {
+                console.error('Error deleting inquiry:', error);
+                showError('Network error deleting inquiry');
+            } finally {
+                // Reset button state
+                btnText.style.display = 'inline';
+                spinner.style.display = 'none';
+                btn.disabled = false;
+            }
+        }
+
+        // Show notification helper
+        function showNotification(message, type = 'info') {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 1rem 1.5rem;
+                border-radius: 8px;
+                color: white;
+                font-weight: 500;
+                z-index: 10000;
+                max-width: 400px;
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+                transition: all 0.3s ease;
+                transform: translateX(100%);
+            `;
+
+            // Set background color based on type
+            switch (type) {
+                case 'success':
+                    notification.style.background = '#059669';
+                    break;
+                case 'error':
+                    notification.style.background = '#dc2626';
+                    break;
+                default:
+                    notification.style.background = '#3b82f6';
+            }
+
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            // Animate in
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+
+            // Remove after 5 seconds
+            setTimeout(() => {
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 5000);
+        }
+
+        // Close modals when clicking outside
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('modal-overlay')) {
+                if (e.target.id === 'convertModal') {
+                    closeConvertModal();
+                } else if (e.target.id === 'followupModal') {
+                    closeFollowupModal();
+                } else if (e.target.id === 'deleteModal') {
+                    closeDeleteModal();
+                }
+            }
+        });
+
+        // Test contact form
+        function testInquiryForm() {
+            window.open('/', '_blank');
+        }
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem('adminToken');
+            localStorage.removeItem('adminUser');
+            window.location.href = '/admin-login.html';
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadInquiries();
+        });
+    </script>
+
+    <!-- Convert to Customer Modal -->
+    <div id="convertModal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Convert to Customer</h3>
+                <button class="modal-close" onclick="closeConvertModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="convertModalContent">
+                    <form id="convertForm">
+                        <div class="form-group">
+                            <label class="form-label">Customer Status</label>
+                            <select id="customerStatus" class="form-select">
+                                <option value="prospect">Prospect</option>
+                                <option value="lead">Lead</option>
+                                <option value="active">Active</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Additional Notes (Optional)</label>
+                            <textarea id="additionalNotes" class="form-textarea" placeholder="Add any additional notes about this conversion..."></textarea>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeConvertModal()">Cancel</button>
+                <button type="button" class="btn btn-primary" id="confirmConvertBtn" onclick="confirmConversion()">
+                    <span class="btn-text">Convert to Customer</span>
+                    <span class="spinner" style="display: none;"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Schedule Follow-up Modal -->
+    <div id="followupModal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Schedule Follow-up</h3>
+                <button class="modal-close" onclick="closeFollowupModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="followupModalContent">
+                    <form id="followupForm">
+                        <div class="form-group">
+                            <label class="form-label">Follow-up Date & Time *</label>
+                            <input type="datetime-local" id="followupDateTime" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Follow-up Notes *</label>
+                            <textarea id="followupNotes" class="form-textarea" placeholder="Enter follow-up details, action items, or reminders..." required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Priority</label>
+                            <select id="followupPriority" class="form-select">
+                                <option value="normal">Normal</option>
+                                <option value="high">High</option>
+                                <option value="urgent">Urgent</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeFollowupModal()">Cancel</button>
+                <button type="button" class="btn btn-primary" id="confirmFollowupBtn" onclick="confirmFollowup()">
+                    <span class="btn-text">Schedule Follow-up</span>
+                    <span class="spinner" style="display: none;"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Delete Inquiry</h3>
+                <button class="modal-close" onclick="closeDeleteModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this inquiry? This action cannot be undone.</p>
+                <p><strong>Note:</strong> Converted inquiries cannot be deleted.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeDeleteModal()">Cancel</button>
+                <button type="button" class="btn btn-primary" id="confirmDeleteBtn" onclick="confirmDeletion()">
+                    <span class="btn-text">Delete Inquiry</span>
+                    <span class="spinner" style="display: none;"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Management - Uniform Palace</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f8fafc;
+            color: #1f2937;
+        }
+
+        .header {
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .logo {
+            color: #dc2626;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .nav-link {
+            color: #6b7280;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .nav-link:hover {
+            color: #dc2626;
+            background: #fef2f2;
+        }
+
+        .nav-link.active {
+            color: #dc2626;
+            background: #fef2f2;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .add-customer-btn {
+            background: #dc2626;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .add-customer-btn:hover {
+            background: #b91c1c;
+            transform: translateY(-2px);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+            border-left: 4px solid #dc2626;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #dc2626;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #6b7280;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .customers-table {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .table-header {
+            background: #f9fafb;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .table-content {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .customer-row {
+            display: grid;
+            grid-template-columns: 2fr 2fr 1fr 1fr 1fr auto;
+            gap: 1rem;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #f3f4f6;
+            align-items: center;
+            transition: background 0.2s ease;
+        }
+
+        .customer-row:hover {
+            background: #f9fafb;
+        }
+
+        .customer-row:last-child {
+            border-bottom: none;
+        }
+
+        .customer-name {
+            font-weight: 500;
+            color: #1f2937;
+        }
+
+        .customer-email {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .customer-phone {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .customer-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .status-active {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-inactive {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-new {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .customer-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            padding: 0.25rem 0.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s ease;
+        }
+
+        .edit-btn {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .edit-btn:hover {
+            background: #bfdbfe;
+        }
+
+        .delete-btn {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .delete-btn:hover {
+            background: #fecaca;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #6b7280;
+        }
+
+        .error-message {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .no-customers {
+            text-align: center;
+            padding: 3rem;
+            color: #6b7280;
+        }
+
+        .no-customers h3 {
+            margin-bottom: 1rem;
+            color: #374151;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .customer-row {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+                padding: 1rem;
+            }
+            
+            .table-header {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">Uniform Palace Admin</div>
+        <div class="nav-links">
+            <a href="/admin-dashboard.html" class="nav-link">Dashboard</a>
+            <a href="/customers.html" class="nav-link active">Customers</a>
+            <a href="/products.html" class="nav-link">Products</a>
+            <a href="/orders.html" class="nav-link">Orders</a>
+            <a href="/inquiries.html" class="nav-link">Inquiries</a>
+            <a href="/admin-dashboard.html" onclick="logout()" style="color: #dc2626;">Logout</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">Customer Management</h1>
+            <button class="add-customer-btn" onclick="showAddCustomerForm()">
+                + Add New Customer
+            </button>
+        </div>
+
+        <div id="errorMessage" class="error-message" style="display: none;"></div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" id="totalCustomers">-</div>
+                <div class="stat-label">Total Customers</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="activeCustomers">-</div>
+                <div class="stat-label">Active Customers</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="newCustomers">-</div>
+                <div class="stat-label">New This Month</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalRevenue">-</div>
+                <div class="stat-label">Total Revenue</div>
+            </div>
+        </div>
+
+        <div class="customers-table">
+            <div class="table-header">
+                <div class="customer-row">
+                    <div>Customer Name</div>
+                    <div>Email</div>
+                    <div>Phone</div>
+                    <div>Status</div>
+                    <div>Business Type</div>
+                    <div>Actions</div>
+                </div>
+            </div>
+            <div class="table-content" id="customersTable">
+                <div class="loading">Loading customers...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check authentication
+        function checkAuth() {
+            const token = localStorage.getItem('adminToken');
+            if (!token) {
+                window.location.href = '/admin-login.html';
+                return;
+            }
+            return token;
+        }
+
+        // Load customers data
+        async function loadCustomers() {
+            const token = checkAuth();
+            if (!token) return;
+
+            try {
+                console.log('Loading customers...');
+                const response = await fetch('/api/customers', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                console.log('Response status:', response.status);
+                const result = await response.json();
+                console.log('API response:', result);
+
+                if (response.ok) {
+                    if (result.success) {
+                        console.log('Customers data:', result.customers);
+                        displayCustomers(result.customers);
+                        updateStats(result);
+                    } else {
+                        console.error('API error:', result);
+                        showError(result.message || 'Failed to load customers');
+                    }
+                } else {
+                    console.error('HTTP error:', response.status);
+                    showError('Failed to load customers');
+                }
+            } catch (error) {
+                console.error('Error loading customers:', error);
+                showError('Network error loading customers');
+            }
+        }
+
+        // Display customers in table
+        function displayCustomers(customers) {
+            const table = document.getElementById('customersTable');
+            
+            if (!customers || customers.length === 0) {
+                table.innerHTML = `
+                    <div class="no-customers">
+                        <h3>No customers found</h3>
+                        <p>Start by adding your first customer using the "Add New Customer" button above.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            table.innerHTML = customers.map(customer => `
+                <div class="customer-row">
+                    <div class="customer-name">${customer.name || 'N/A'}</div>
+                    <div class="customer-email">${customer.email || 'N/A'}</div>
+                    <div class="customer-phone">${customer.phone || 'N/A'}</div>
+                    <div class="customer-status status-${customer.status || 'new'}">${customer.status || 'new'}</div>
+                    <div>${customer.businessType || 'N/A'}</div>
+                    <div class="customer-actions">
+                        <button class="action-btn edit-btn" onclick="editCustomer('${customer._id}')">Edit</button>
+                        <button class="action-btn delete-btn" onclick="deleteCustomer('${customer._id}')">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Update statistics
+        function updateStats(data) {
+            if (data.pagination && data.pagination.totalCustomers) {
+                document.getElementById('totalCustomers').textContent = data.pagination.totalCustomers;
+            }
+            if (data.stats && data.stats.statusStats) {
+                const activeCount = data.stats.statusStats.active || 0;
+                document.getElementById('activeCustomers').textContent = activeCount;
+            }
+            // For now, set these to 0 until we implement the specific logic
+            document.getElementById('newCustomers').textContent = '0';
+            document.getElementById('totalRevenue').textContent = '₹0';
+        }
+
+        // Show error message
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        // Show add customer form (placeholder)
+        function showAddCustomerForm() {
+            alert('Add Customer Form\n\nThis feature will be implemented in the next phase. For now, you can add customers via the API endpoint:\n\nPOST /api/customers\n\nUse Postman or similar tool with your admin token to test this endpoint.');
+        }
+
+        // Edit customer (placeholder)
+        function editCustomer(id) {
+            alert(`Edit Customer: ${id}\n\nThis feature will be implemented in the next phase. For now, you can edit customers via the API endpoint:\n\nPUT /api/customers/${id}\n\nUse Postman or similar tool with your admin token to test this endpoint.`);
+        }
+
+        // Delete customer (placeholder)
+        function deleteCustomer(id) {
+            if (confirm('Are you sure you want to delete this customer?')) {
+                alert(`Delete Customer: ${id}\n\nThis feature will be implemented in the next phase. For now, you can delete customers via the API endpoint:\n\nDELETE /api/customers/${id}\n\nUse Postman or similar tool with your admin token to test this endpoint.`);
+            }
+        }
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem('adminToken');
+            localStorage.removeItem('adminUser');
+            window.location.href = '/admin-login.html';
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCustomers();
+        });
+    </script>
+</body>
+</html>
